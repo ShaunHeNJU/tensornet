@@ -15,6 +15,8 @@
 #ifndef TENSORNET_OPTIMIZER_DATA_STRUCT_H_
 #define TENSORNET_OPTIMIZER_DATA_STRUCT_H_
 
+#include <stdint.h>
+
 namespace tensornet {
 
 union UnionWeight {
@@ -23,8 +25,14 @@ union UnionWeight {
 };
 
 struct SparseGradInfo {
-    float* grad;
+    SparseGradInfo()
+        : sign(0)
+        , batch_show(0)
+        , grad(nullptr) {
+    }
+    uint64_t sign;
     int batch_show;
+    float* grad;
 };
 
 } // namespace tensornet {

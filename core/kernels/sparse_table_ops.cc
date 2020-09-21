@@ -267,7 +267,6 @@ private:
 
             auto& var_info = var_infos[var_index];
 
-            mutex_lock ml(*var_info.var->mu());
             Tensor* var_tensor = var_info.var->tensor();
 
             CHECK_EQ(resp.dim(), var_info.VarDim());

@@ -16,6 +16,14 @@ filegroup(
 )
 
 filegroup(
+    name = "blocking_queue",
+    srcs = [
+        "blocking_queue.h",
+    ],
+    visibility = ["//visibility:public"]
+)
+
+filegroup(
     name = "semaphore",
     srcs = [
         "semaphore.h",

@@ -34,6 +34,13 @@ SparseTable::SparseTable(const OptimizerBase* opt, int dimension,
     CHECK(opt_ != nullptr);
 
     op_kernel_ = opt_->CreateSparseOptKernel(dim_);
+
+    grad_push_thread_ = std::thread(&SparseTable::UpdateGrad_, this);
+}
+
+SparseTable::~SparseTable() {
+    stop_thread_ = true;
+    grad_push_thread_.join();
 }
 
 void SparseTable::SetHandle(uint32_t handle) {
@@ -66,22 +73,21 @@ void SparseTable::Pull(const SparsePullRequest* req, SparsePullResponse* resp) {
 void SparseTable::Push(const SparsePushRequest* req, SparsePushResponse* resp) {
     CHECK_EQ(dim_, req->dim());
 
-    std::vector<float> grad(dim_);
-
     for (int i = 0; i < req->var_infos_size(); i++) {
         const auto& var_info = req->var_infos(i);
 
         CHECK_EQ(var_info.w_size(), dim_);
 
+        SparseGradInfo grad_info;
+        grad_info.sign = var_info.sign();
+        grad_info.batch_show = var_info.batch_show();
+        grad_info.grad = new float[dim_];
+
         for (int j = 0; j < var_info.w_size(); j++) {
-            grad[j] = var_info.w(j);
+            grad_info.grad[j] = var_info.w(j);
         }
 
-        SparseGradInfo grad_info;
-        grad_info.grad = grad.data();
-        grad_info.batch_show = var_info.batch_show();
-
-        op_kernel_->Apply(var_info.sign(), grad_info);
+        grad_update_queue_.push(std::move(grad_info));
     }
 }
 
@@ -118,6 +124,17 @@ void SparseTable::Load(const std::string& filepath) const {
 
 void SparseTable::ShowDecay() const {
     op_kernel_->ShowDecay();
+}
+
+void SparseTable::UpdateGrad_() {
+    while (!stop_thread_) {
+        SparseGradInfo grad_info;
+
+        while (grad_update_queue_.pop(grad_info)) {
+            op_kernel_->Apply(grad_info.sign, grad_info);
+            delete grad_info.grad;
+        }
+    }
 }
 
 SparseTableRegistry* SparseTableRegistry::Instance() {

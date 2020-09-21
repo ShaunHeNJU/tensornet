@@ -21,11 +21,14 @@
 #include <string>
 #include <vector>
 #include <mutex>
+#include <thread>
 
 #include <butil/iobuf.h>
 
 #include "core/ps/optimizer/optimizer.h"
 #include "core/protobuf/ps_server.pb.h"
+#include "core/utility/blocking_queue.h"
+#include "core/ps/optimizer/data_struct.h"
 
 namespace tensornet {
 
@@ -34,7 +37,7 @@ public:
     SparseTable(const OptimizerBase* opt, int dimension,
             int shard_num, int self_shard_id);
 
-    ~SparseTable() = default;
+    ~SparseTable();
 
     void Pull(const SparsePullRequest* req, SparsePullResponse* resp);
 
@@ -53,12 +56,21 @@ public:
     void ShowDecay() const;
 
 private:
+    void UpdateGrad_();
+
+private:
     int shard_num_ = 0;
     int self_shard_id_ = 0;
     uint32_t handle_ = 0;
     const OptimizerBase* opt_ = nullptr;
     std::shared_ptr<SparseOptimizerKernelBase> op_kernel_;
     int dim_;
+
+    BlockingQueue<SparseGradInfo> grad_update_queue_;
+
+    std::thread grad_push_thread_;
+
+    bool stop_thread_ = false;
 };
 
 class SparseTableRegistry {

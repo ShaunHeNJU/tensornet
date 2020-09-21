@@ -115,6 +115,7 @@ cc_library(
     hdrs = glob([
         "ps/table/*.h",
     ]) + [
+        "//core/utility:blocking_queue",
     ],
     deps = [
         ":server_cc_proto",
