@@ -383,15 +383,12 @@ public:
             }
         }
 
-        Semaphore semaphore(calls.size());
         for (auto& call : calls) {
-            call->Start([this, c, call, &semaphore]() {
-                semaphore.Notify();
+            call->Start([this, call]() {
                 delete call;
             });
         }
 
-        semaphore.WaitForSemaphore();
         done();
     }
 
