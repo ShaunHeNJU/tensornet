@@ -8,7 +8,7 @@ http_archive(
     sha256 = "2595a5c401521f20a2734c4e5d54120996f8391f00bb62a57267d930bce95350",
     strip_prefix = "tensorflow-2.3.0",
     urls = [
-        "https://github.com/tensorflow/tensorflow/archive/v2.3.0.tar.gz",
+        "https://gitlab.vmic.xyz/11103403/tensornet-lib/blob/master/tensorflow-2.3.0.tar.gz",
     ],
 )
 
@@ -19,15 +19,15 @@ http_archive(
     sha256 = "5b00383d08dd71f28503736db0500b6fb4dda47489ff5fc6bed42557c07c6ba9",
     strip_prefix = "rules_closure-308b05b2419edb5c8ee0471b67a40403df940149",
     urls = [
-        "https://storage.googleapis.com/mirror.tensorflow.org/github.com/bazelbuild/rules_closure/archive/308b05b2419edb5c8ee0471b67a40403df940149.tar.gz",
-        "https://github.com/bazelbuild/rules_closure/archive/308b05b2419edb5c8ee0471b67a40403df940149.tar.gz",  # 2019-06-13
+        "https://gitlab.vmic.xyz/11103403/tensornet-lib/blob/master/308b05b2419edb5c8ee0471b67a40403df940149.tar.gz",
+        "https://gitlab.vmic.xyz/11103403/tensornet-lib/blob/master/rules_closure-308b05b2419edb5c8ee0471b67a40403df940149.tar.gz",  # 2019-06-13
     ],
 )
 
 http_archive(
     name = "brpc",
     urls = [
-    "https://github.com/apache/incubator-brpc/archive/0.9.7.tar.gz"
+    "https://gitlab.vmic.xyz/11103403/tensornet-lib/blob/master/incubator-brpc-0.9.7.tar.gz"
     ],
     sha256 = "722cd342baf3b05189ca78ecf6c56ea6ffec22e62fc2938335e4e5bab545a49c",
     strip_prefix = "incubator-brpc-0.9.7",
@@ -38,7 +38,7 @@ http_archive(
     name = "com_github_google_leveldb",
     build_file = "@brpc//:leveldb.BUILD",
     strip_prefix = "leveldb-a53934a3ae1244679f812d998a4f16f2c7f309a6",
-    url = "https://github.com/google/leveldb/archive/a53934a3ae1244679f812d998a4f16f2c7f309a6.tar.gz"
+    url = "https://gitlab.vmic.xyz/11103403/tensornet-lib/blob/master/leveldb-a53934a3ae1244679f812d998a4f16f2c7f309a6.tar.gz"
 )
 
 git_repository(
